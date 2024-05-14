@@ -4,19 +4,17 @@ import { createHash } from "crypto";
 const SALT = 10;
 
 // Function to hash the password
-export async function hashPassword(password: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const hash = createHash("sha256");
-    hash.update(password + SALT);
-    resolve(hash.digest("hex"));
-  });
+export function hashPassword(password: string): string {
+  const hash = createHash("sha256");
+  hash.update(password + SALT);
+  return hash.digest("hex");
 }
 
 // Function to check if the password matches the hashed password
-export async function checkPassword(
+export function checkPassword(
   password: string,
   hashedPassword: string
-): Promise<boolean> {
-  const hash = await hashPassword(password);
+): boolean {
+  const hash = hashPassword(password);
   return hash === hashedPassword;
 }

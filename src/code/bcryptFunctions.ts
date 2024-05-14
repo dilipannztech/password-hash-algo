@@ -1,15 +1,10 @@
-import { createHash } from "crypto";
-
-// Static salt value
-const SALT = 10;
+import bcrypt from "bcrypt";
 
 // Function to hash the password
 export async function hashPassword(password: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const hash = createHash("sha256");
-    hash.update(password + SALT);
-    resolve(hash.digest("hex"));
-  });
+  const saltRounds = 10; // Number of salt rounds
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  return hashedPassword;
 }
 
 // Function to check if the password matches the hashed password
@@ -17,6 +12,6 @@ export async function checkPassword(
   password: string,
   hashedPassword: string
 ): Promise<boolean> {
-  const hash = await hashPassword(password);
-  return hash === hashedPassword;
+  const isMatch = await bcrypt.compare(password, hashedPassword);
+  return isMatch;
 }

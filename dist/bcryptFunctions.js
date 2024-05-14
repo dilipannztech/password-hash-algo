@@ -8,27 +8,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkPassword = exports.hashPassword = void 0;
-const crypto_1 = require("crypto");
-// Static salt value
-const SALT = 10;
+const bcrypt_1 = __importDefault(require("bcrypt"));
 // Function to hash the password
 function hashPassword(password) {
     return __awaiter(this, void 0, void 0, function* () {
-        return new Promise((resolve, reject) => {
-            const hash = (0, crypto_1.createHash)("sha256");
-            hash.update(password + SALT);
-            resolve(hash.digest("hex"));
-        });
+        const saltRounds = 10; // Number of salt rounds
+        const hashedPassword = yield bcrypt_1.default.hash(password, saltRounds);
+        return hashedPassword;
     });
 }
 exports.hashPassword = hashPassword;
 // Function to check if the password matches the hashed password
 function checkPassword(password, hashedPassword) {
     return __awaiter(this, void 0, void 0, function* () {
-        const hash = yield hashPassword(password);
-        return hash === hashedPassword;
+        const isMatch = yield bcrypt_1.default.compare(password, hashedPassword);
+        return isMatch;
     });
 }
 exports.checkPassword = checkPassword;
