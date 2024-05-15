@@ -1,17 +1,28 @@
 import bcrypt from "bcrypt";
 
+// Constant for salt rounds
+const SALT_ROUNDS = 10;
+
 // Function to hash the password
-export async function hashPassword(password: string): Promise<string> {
-  const saltRounds = 10; // Number of salt rounds
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
-  return hashedPassword;
+export function hashPassword(password: string): string {
+  try {
+    const salt = bcrypt.genSaltSync(SALT_ROUNDS);
+    const hashedPassword: string = bcrypt.hashSync(password, salt);
+    return hashedPassword;
+  } catch (error) {
+    throw new Error(`Error hashing password: ${error}`);
+  }
 }
 
 // Function to check if the password matches the hashed password
-export async function checkPassword(
+export function checkPassword(
   password: string,
   hashedPassword: string
-): Promise<boolean> {
-  const isMatch = await bcrypt.compare(password, hashedPassword);
-  return isMatch;
+): boolean {
+  try {
+    const isMatch: boolean = bcrypt.compareSync(password, hashedPassword);
+    return isMatch;
+  } catch (error) {
+    throw new Error(`Error checking password: ${error}`);
+  }
 }
